@@ -480,8 +480,6 @@ def _fill_model_fields(model, **kwargs):
             model_fields[field.fk_field] = kwargs[field.fk_field]= object.id
     # fill local fields
     for field in model._meta.fields:
-        if field.blank or field.null:
-            continue
         if field.name in model_fields:
             if isinstance(kwargs[field.name], Q):
                 """
@@ -506,6 +504,8 @@ def _fill_model_fields(model, **kwargs):
             skip self relations
             """
         else:
+            if field.blank or field.null:
+                continue
             setattr(model, field.name, any_field(field, **fields_args[field.name]))
 
     # procceed reversed relations
