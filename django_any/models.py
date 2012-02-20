@@ -225,7 +225,6 @@ def any_file_field(field, **kwargs):
     """
     def get_some_file(path):
         subdirs, files = field.storage.listdir(path)
-
         if files:
             result_file = random.choice(files)
             instance = field.storage.open("%s/%s" % (path, result_file)).file
@@ -481,6 +480,8 @@ def _fill_model_fields(model, **kwargs):
             model_fields[field.fk_field] = kwargs[field.fk_field]= object.id
     # fill local fields
     for field in model._meta.fields:
+        if field.blank or field.null:
+            continue
         if field.name in model_fields:
             if isinstance(kwargs[field.name], Q):
                 """
